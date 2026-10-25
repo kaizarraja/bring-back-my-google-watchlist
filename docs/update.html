@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to update – Bring Back My Google Watchlist</title>
+  <meta name="description" content="What's new in the latest version, and how to update the extension in about a minute.">
+  <link rel="icon" href="assets/icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="assets/icon.png" alt="">Bring Back My Google Watchlist</a>
+      <nav class="site"><a href="./">Home</a><a href="./#install">Install</a></nav>
+    </div>
+  </header>
+
+  <main class="wrap prose">
+    <h1>How to update</h1>
+    <p>The extension was installed by hand, so it can't update itself. Updating takes about a minute, and <strong>your list stays as it is</strong>.</p>
+
+    <div class="callout" id="whats-new">
+      <strong>Latest version: <span id="latest-version">…</span></strong> <span class="small" id="latest-date"></span>
+      <p id="latest-notes" style="margin:6px 0 0"></p>
+    </div>
+
+    <p class="note"><strong>Don't click “Remove”</strong> on the extension. Removing it deletes the list stored in that browser. If you've signed in to sync, signing in again brings it back; otherwise it's gone.</p>
+
+    <ol class="steps">
+      <li>
+        <strong>Download the new version.</strong>
+        <div class="actions" style="margin:8px 0 4px"><a class="button" href="bring-back-my-google-watchlist.zip" download>Download the latest version</a></div>
+        Unzip it: on a Mac, double-click it; on Windows, right-click it and choose <em>Extract All</em>. You get a folder called <code>bring-back-my-google-watchlist</code>.
+      </li>
+      <li>
+        <strong>Replace your old folder with the new one.</strong> Put the new folder where the old one is (often your Documents folder), with the same name.
+        On a Mac, drag it there and choose <strong>Replace</strong>. On Windows, delete the old folder first, then move the new one in.
+        <br><span class="small">Can't remember where the old folder is? Open the extensions page (next step), click <strong>Details</strong> on the extension, and look for <strong>Source</strong>.</span>
+      </li>
+      <li>
+        <strong>Reload the extension.</strong> Type <code>chrome://extensions</code> in the address bar (Brave: <code>brave://extensions</code>, Edge: <code>edge://extensions</code>) and click the circular arrow <strong>↻</strong> on the extension's card.
+        <img class="step-shot" style="width:440px" src="assets/update-reload.png" alt="The extension's card on the extensions page, with the circular reload arrow highlighted" width="850" height="470" loading="lazy">
+      </li>
+      <li><strong>Check it worked.</strong> The card now shows the new version number, and the orange <strong>NEW</strong> badge on the toolbar icon disappears. If it's still there, reload any open Google tabs.</li>
+    </ol>
+
+    <h2>Something went wrong?</h2>
+    <ul>
+      <li><strong>The card shows an error after reloading:</strong> the folder may be the zip's outer folder or an unfinished unzip. Delete it, unzip the download again, and repeat step 2.</li>
+      <li><strong>Your list looks empty:</strong> if you're signed in to sync, open the extension's icon and click <strong>Sync now</strong>. If not, you probably loaded a fresh copy instead of replacing the old folder. Put the old folder back and reload.</li>
+      <li>Still stuck? <a href="https://github.com/kaizarraja/bring-back-my-google-watchlist/issues">Open an issue on GitHub</a> or email <a href="mailto:kaizar.raja@gmail.com">kaizar.raja@gmail.com</a>.</li>
+    </ul>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <a href="./">Home</a> · <a href="privacy.html">Privacy policy</a> · <a href="https://github.com/kaizarraja/bring-back-my-google-watchlist">Source code</a><br>
+      Not affiliated with Google. Google is a trademark of Google LLC.
+    </div>
+  </footer>
+
+  <script>
+    fetch('version.json', { cache: 'no-store' }).then((r) => r.json()).then((v) => {
+      document.getElementById('latest-version').textContent = v.version;
+      if (v.released) document.getElementById('latest-date').textContent = '· released ' + v.released;
+      document.getElementById('latest-notes').textContent = (v.important ? 'Important update. ' : '') + (v.notes || '');
+    }).catch(() => {
+      document.getElementById('whats-new').hidden = true;
+    });
+  </script>
+</body>
+</html>

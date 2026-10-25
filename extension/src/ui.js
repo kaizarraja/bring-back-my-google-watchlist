@@ -113,6 +113,21 @@
     .wl-empty { grid-column: 1 / -1; margin: 0; padding: 24px 0; color: var(--wl-muted); }
     .wl-head-side { display: inline-flex; align-items: baseline; gap: 12px; }
     .wl-fill-note { margin: 6px 0 0; color: var(--wl-muted); font-size: 12px; }
+    .wl-update {
+      display: flex; align-items: flex-start; gap: 8px; margin: 0 0 14px; padding: 10px 12px; border-radius: 10px;
+      background: #fef3e2; color: #5c3400; font-size: 13px; border: 1px solid #f6c37e;
+    }
+    .wl-root[data-theme="dark"] .wl-update { background: #3b2a12; color: #ffd8a8; border-color: #6b4a1c; }
+    .wl-update.wl-important { background: #fce8e6; color: #8c1d18; border-color: #f4b4ae; }
+    .wl-root[data-theme="dark"] .wl-update.wl-important { background: #3f1d1b; color: #f8c6c2; border-color: #7a2e29; }
+    .wl-update[hidden] { display: none; }
+    .wl-update-text { flex: 1; min-width: 0; }
+    .wl-update a { color: inherit; font-weight: 600; }
+    .wl-update-dismiss {
+      flex: none; display: inline-flex; padding: 2px; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer;
+    }
+    .wl-update-dismiss[hidden] { display: none; }
+    .wl-update-dismiss svg { width: 16px; height: 16px; }
     .wl-fill-note[hidden] { display: none; }
     .wl-import-link { color: var(--wl-accent); font-size: 13px; font-weight: 500; text-decoration: none; }
     .wl-import-link:hover { text-decoration: underline; }
@@ -259,6 +274,40 @@
     ]);
   }
 
+  // "Version 0.5.0 is out" banner, shown above the list when the background check has
+  // found a newer version. It can be dismissed until the next version, unless the update
+  // is marked important.
+  function createUpdateBanner() {
+    const text = el('div', { class: 'wl-update-text' });
+    const dismiss = el('button', { class: 'wl-update-dismiss', type: 'button', 'aria-label': 'Hide until the next version', title: 'Hide until the next version', html: ICONS.close });
+    const banner = el('div', { class: 'wl-update', role: 'status', hidden: true }, [text, dismiss]);
+
+    async function render() {
+      const { 'update:latest': latest, 'update:dismissed': dismissed } = await chrome.storage.local.get(['update:latest', 'update:dismissed']);
+      const show = latest && WL.isNewerVersion(latest.version, chrome.runtime.getManifest().version) &&
+        (latest.important || dismissed !== latest.version);
+      banner.hidden = !show;
+      if (!show) return;
+      banner.classList.toggle('wl-important', latest.important);
+      dismiss.hidden = latest.important;
+      text.replaceChildren(
+        el('strong', { text: latest.important ? `Important update: version ${latest.version}. Please update now. ` : `Version ${latest.version} is out. ` }),
+        latest.notes ? `${latest.notes} ` : '',
+        el('a', { href: WL_CONFIG.updatePage, target: '_blank', rel: 'noopener', text: 'How to update →' }),
+      );
+    }
+
+    dismiss.addEventListener('click', async () => {
+      const { 'update:latest': latest } = await chrome.storage.local.get('update:latest');
+      if (latest) await chrome.storage.local.set({ 'update:dismissed': latest.version });
+    });
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === 'local' && ('update:latest' in changes || 'update:dismissed' in changes)) render();
+    });
+    render();
+    return banner;
+  }
+
   // Google's own saved items, where the old watchlist lives as a collection.
   const GOOGLE_SAVES_URL = 'https://www.google.com/interests/saved';
 
@@ -325,6 +374,7 @@
     });
 
     const root = el('section', { class: 'wl-list', 'aria-label': 'Your watchlist' }, [
+      createUpdateBanner(),
       el('div', { class: 'wl-head' }, [
         el('h2', { class: 'wl-title', text: options.heading || 'Your watchlist' }),
         el('span', { class: 'wl-head-side' }, [sub, importLink]),

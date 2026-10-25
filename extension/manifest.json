@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Bring Back My Google Watchlist",
   "short_name": "My Watchlist",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "homepage_url": "https://kaizarraja.github.io/bring-back-my-google-watchlist/",
   "description": "Brings back the Watchlist button on Google movie and TV pages, and shows your list when you search \"my watchlist\".",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyGH5B4YLj7a0V8Xd0hXhWA7UA0XIxSOP0CpvwN73AMuEbSi/fh4pB/Ss9lZoaIXA1wRqAFREpqpi4kPC0O1/9VHdYtaYguwbBPbQoaamQc7GCSUiYSjNoDhaFVv3tB7u2zr/THChhpCdvANh3BHygjEDcz6rTZgGdI/CCLlSPzCrE0ls0mWV41CIuIVV2+mw6LRwh+ziAWYsL2U5iJU5GVNAdoXkl9nDXKX2ld7t7vmYcrwy+nt48wXD9G2X0WzXE3erueNIG7ShyG+uqQjhTmr6kENctvW0OUkx0dw/H+4QQUql/PUvWtnvI2ffKxmj7LYaFA8bEQ97RrUbTqEivwIDAQAB",
@@ -56,6 +56,7 @@
         "https://www.google.co.jp/search*"
       ],
       "js": [
+        "src/config.js",
         "src/storage.js",
         "src/ui.js",
         "src/google.js",
@@ -75,6 +76,7 @@
         "https://www.google.com.au/interests/saved*"
       ],
       "js": [
+        "src/config.js",
         "src/storage.js",
         "src/ui.js",
         "src/google.js",

@@ -1,1 +1,6 @@
-{ "version": "0.4.0" }
+{
+  "version": "0.5.0",
+  "notes": "Installed copies now tell you when an update is out: an orange NEW badge on the toolbar icon and a banner above your list on Google. There's also a step-by-step How to update page.",
+  "important": false,
+  "released": "2026-10-25"
+}

@@ -126,8 +126,49 @@ async function deleteAccount() {
   await chrome.storage.local.remove([AUTH, CURSOR, STATUS]);
 }
 
+// ---- Update nudges ----
+// Hand-installed extensions can't update themselves, so once a day (and when the browser
+// starts or the popup opens) check the website's version.json. If there's a newer
+// version, show an orange NEW badge on the toolbar icon; the list on Google and in the
+// popup show a banner with what's new and a link to the How to update page.
+
+const UPDATE_ALARM = 'update-check';
+const LATEST = 'update:latest'; // { version, notes, important, checkedAt }
+
+async function refreshBadge() {
+  const { [LATEST]: latest } = await chrome.storage.local.get(LATEST);
+  const current = chrome.runtime.getManifest().version;
+  if (latest && WL.isNewerVersion(latest.version, current)) {
+    await chrome.action.setBadgeBackgroundColor({ color: latest.important ? '#C5221F' : '#E8710A' });
+    await chrome.action.setBadgeText({ text: 'NEW' });
+    await chrome.action.setTitle({ title: `Update available: version ${latest.version}. Open to see what's new.` });
+  } else {
+    await chrome.action.setBadgeText({ text: '' });
+    await chrome.action.setTitle({ title: 'My Watchlist' });
+  }
+}
+
+async function checkForUpdate() {
+  try {
+    const res = await fetch(WL_CONFIG.versionUrl, { cache: 'no-store' });
+    if (!res.ok) return;
+    const { version, notes = '', important = false } = await res.json();
+    if (typeof version !== 'string') return;
+    await chrome.storage.local.set({ [LATEST]: { version, notes: String(notes), important: Boolean(important), checkedAt: Date.now() } });
+  } catch {
+    // Offline or the site is down; try again at the next check.
+  }
+  await refreshBadge();
+}
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === UPDATE_ALARM) checkForUpdate();
+});
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  const handlers = { 'sign-in': signIn, 'sign-out': signOut, 'sync-now': syncNow, 'delete-account': deleteAccount };
+  const handlers = {
+    'sign-in': signIn, 'sign-out': signOut, 'sync-now': syncNow, 'delete-account': deleteAccount, 'check-update': checkForUpdate,
+  };
   const handler = handlers[message && message.type];
   if (!handler) return false;
   handler().then(
@@ -151,7 +192,9 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 function schedule() {
   chrome.alarms.create(ALARM, { periodInMinutes: 30 });
+  chrome.alarms.create(UPDATE_ALARM, { periodInMinutes: 24 * 60 });
   syncNow();
+  checkForUpdate();
 }
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {

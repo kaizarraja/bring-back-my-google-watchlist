@@ -22,12 +22,10 @@
   const signOutButton = el('button', { class: 'wl-link', type: 'button', text: 'Sign out', onclick: () => send('sign-out') });
   const deleteButton = el('button', { class: 'wl-link', type: 'button', text: 'Delete synced data', onclick: deleteSynced });
   const syncRow = el('div', { class: 'wl-sync' }, [syncText, signInButton, syncNowButton, signOutButton, deleteButton]);
-  const updateNote = el('a', { class: 'wl-update', href: WL_CONFIG.homepage, target: '_blank', rel: 'noopener', hidden: true });
 
   app.append(
     WLUI.createListView({ openInNewTab: true, showSearch: true }),
     el('footer', { class: 'wl-footer' }, [
-      updateNote,
       syncRow,
       el('button', { class: 'wl-link', type: 'button', text: 'Export', title: 'Save a backup file of your watchlist', onclick: exportFile }),
       el('button', { class: 'wl-link', type: 'button', text: 'Import file', title: 'Load a backup file', onclick: () => fileInput.click() }),
@@ -83,24 +81,9 @@
     status.textContent = res.ok ? 'Your synced data was deleted from the server.' : "Couldn't delete: " + res.error;
   }
 
-  // Installed by hand, the extension can't update itself, so point people to a newer release.
-  async function checkForUpdate() {
-    try {
-      const latest = await (await fetch(WL_CONFIG.versionUrl, { cache: 'no-store' })).json();
-      const newer = (a, b) => {
-        const [x, y] = [a, b].map((v) => String(v).split('.').map(Number));
-        for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0);
-        return false;
-      };
-      if (newer(latest.version, chrome.runtime.getManifest().version)) {
-        updateNote.textContent = `Version ${latest.version} is available. Download it →`;
-        updateNote.hidden = false;
-      }
-    } catch {
-      // Offline or the site is down; try again next time.
-    }
-  }
-  checkForUpdate();
+  // Opening the popup is a good moment to look for a newer version; the banner above the
+  // list appears as soon as the background check finds one.
+  send('check-update');
 
   async function exportFile() {
     const items = (await WL.getAll()).map(({ poster, ...rest }) => rest);

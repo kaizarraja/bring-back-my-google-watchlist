@@ -277,8 +277,17 @@
     if (removals.length) await local.remove(removals);
   }
 
+  // True if version string a ("0.5.0") is newer than b.
+  function isNewerVersion(a, b) {
+    const [x, y] = [a, b].map((v) => String(v).split('.').map(Number));
+    for (let i = 0; i < Math.max(x.length, y.length); i++) {
+      if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0);
+    }
+    return false;
+  }
+
   globalThis.WL = {
-    getAll, has, add, addMany, remove, setWatched, fillDetails, onChange, idFor, googleUrl,
+    getAll, has, add, addMany, remove, setWatched, fillDetails, onChange, idFor, googleUrl, isNewerVersion,
     pendingChanges, markSent, markAllUnsent, applyRemote,
   };
 })();
