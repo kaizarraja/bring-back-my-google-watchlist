@@ -5,21 +5,53 @@
 // behind the page) and data-attrid (which knowledge-panel fact a block shows).
 
 (() => {
-  function getQuery() {
-    return (new URLSearchParams(location.search).get('q') || '').trim();
+  // What was searched: the address bar's q, plus what's in the search box when the page
+  // loads. They differ when Google corrects a typo ("my watchlis" → "my watchlist"): the
+  // address keeps the typo while the box shows the corrected search.
+  function getQueries() {
+    const fromUrl = new URLSearchParams(location.search).get('q') || '';
+    const box = document.querySelector('textarea[name="q"], input[name="q"]');
+    return [fromUrl, box ? box.value : ''].map((q) => q.trim()).filter(Boolean);
   }
 
-  // "my watchlist", "watchlist", "my watch list tv shows", "google watchlist movies", ...
-  // Returns null when the query isn't a watchlist query, else the kind filter.
+  // Every way of writing the query, without spaces: [prefix][core][suffix] → kind filter.
+  const PREFIXES = ['', 'my', 'google', 'mygoogle', 'show', 'showmy'];
+  const CORES = ['watchlist', 'wanttowatch', 'wanttowatchlist'];
+  const SUFFIXES = {
+    '': 'all', movies: 'movie', movie: 'movie', films: 'movie', film: 'movie',
+    tv: 'tv', tvshows: 'tv', tvshow: 'tv', shows: 'tv', series: 'tv', tvseries: 'tv',
+  };
+  const TARGETS = PREFIXES.flatMap((p) => CORES.flatMap((c) => Object.entries(SUFFIXES).map(([s, kind]) => [p + c + s, kind])));
+
+  function editDistance(a, b) {
+    let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+      const row = [i];
+      for (let j = 1; j <= b.length; j++) {
+        row[j] = Math.min(prev[j] + 1, row[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = row;
+    }
+    return prev[b.length];
+  }
+
+  // "my watchlist", "watchlist", "my watch list tv shows", "google watchlist movies", and
+  // small typos of them ("my watchlis", "my wacthlist"). Returns null when the query
+  // isn't a watchlist search, else { kind: 'all' | 'movie' | 'tv' }.
   function parseWatchlistQuery(q) {
-    const norm = q.toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
-    const m = norm.match(/^(?:show )?(?:my |google |my google )?(?:watch ?list|want to watch(?: list)?)(?: (.*))?$/);
-    if (!m) return null;
-    const rest = m[1] || '';
-    if (!rest) return { kind: 'all' };
-    if (/^(movies?|films?)$/.test(rest)) return { kind: 'movie' };
-    if (/^(tv|tv shows?|shows?|series|tv series)$/.test(rest)) return { kind: 'tv' };
-    return null;
+    const squashed = q.toLowerCase().replace(/[^a-z]/g, '');
+    // Typos rarely lose the "w" of watch; requiring it keeps "match list" from matching.
+    if (squashed.length < 6 || squashed.length > 30 || !squashed.includes('w')) return null;
+    let best = null;
+    for (const [target, kind] of TARGETS) {
+      // One typo allowed in short targets, two in longer ones.
+      const allowed = target.length >= 9 ? 2 : 1;
+      if (Math.abs(target.length - squashed.length) > allowed) continue;
+      const d = editDistance(squashed, target);
+      if (d <= allowed && (!best || d < best.d)) best = { d, kind };
+      if (best && best.d === 0) break;
+    }
+    return best && { kind: best.kind };
   }
 
   // data-maindata looks like [null, "/m/0661ql3", "Inception", "vise:/m/0661ql3", ["FILM"], ...]
@@ -175,5 +207,5 @@
     return { place: (host) => column.prepend(host) };
   }
 
-  globalThis.WLGoogle = { getQuery, parseWatchlistQuery, findEntity, findSubtitles, findPanelSpot, fetchDetails, capturePoster };
+  globalThis.WLGoogle = { getQueries, parseWatchlistQuery, findEntity, findSubtitles, findPanelSpot, fetchDetails, capturePoster };
 })();

@@ -47,10 +47,23 @@
   }
 
   let entity;
+  let pageUrl = location.href;
+
+  function isWatchlistSearch() {
+    // Ignore the search box while someone is typing in it; only what was searched counts.
+    const typing = document.activeElement && document.activeElement.matches('textarea[name="q"], input[name="q"]');
+    const queries = WLGoogle.getQueries();
+    for (const q of typing ? queries.slice(0, 1) : queries) {
+      const found = WLGoogle.parseWatchlistQuery(q);
+      if (found) return found;
+    }
+    return null;
+  }
 
   function run() {
-    const watchlist = WLGoogle.parseWatchlistQuery(WLGoogle.getQuery());
+    const watchlist = isWatchlistSearch();
     if (watchlist) ensurePanel(watchlist.kind);
+    else document.querySelector(`[${HOST_ATTR}="panel"]`)?.remove();
 
     entity = entity || WLGoogle.findEntity();
     if (entity) ensureButtons(entity);
@@ -62,17 +75,34 @@
     if (entity) WL.fillDetails(WL.idFor(entity), entity);
   }
 
-  run();
-  fillDetailsIfSaved();
-  // Any Google page is a chance to fill in titles still missing a poster or year.
-  WLFiller.start();
-
   // Parts of the page render late; put the button back if Google re-renders the header.
   let pending = 0;
+  let stopWatching = 0;
   const observer = new MutationObserver(() => {
     clearTimeout(pending);
     pending = setTimeout(run, 250);
   });
-  observer.observe(document.body, { childList: true, subtree: true });
-  setTimeout(() => observer.disconnect(), 20000);
+  function watchForLateChanges() {
+    observer.observe(document.body, { childList: true, subtree: true });
+    clearTimeout(stopWatching);
+    stopWatching = setTimeout(() => observer.disconnect(), 20000);
+  }
+
+  run();
+  fillDetailsIfSaved();
+  watchForLateChanges();
+  // Any Google page is a chance to fill in titles still missing a poster or year.
+  WLFiller.start();
+
+  // Google sometimes swaps in new results without loading a new page (e.g. after "Did you
+  // mean"), so treat a changed address as a new page.
+  setInterval(() => {
+    if (location.href === pageUrl) return;
+    pageUrl = location.href;
+    entity = null;
+    document.querySelectorAll(`[${HOST_ATTR}="button"], [${HOST_ATTR}="floating"]`).forEach((host) => host.remove());
+    run();
+    fillDetailsIfSaved();
+    watchForLateChanges();
+  }, 1000);
 })();
