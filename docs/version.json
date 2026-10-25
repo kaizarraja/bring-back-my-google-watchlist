@@ -1,6 +1,6 @@
 {
-  "version": "0.5.3",
-  "notes": "New \"Manage extension\" link at the bottom of the toolbar window: it opens the extension's own settings page, where the ↻ reload button for updating sits at the top right.",
+  "version": "0.6.0",
+  "notes": "\"Want to watch\" works again where it always was: in the Watch movie / Watch show section further down Google's page. Clicking Google's own button now also saves to your list, and when Google hides it, ours appears in the same spot.",
   "important": false,
   "released": "2026-10-25"
 }

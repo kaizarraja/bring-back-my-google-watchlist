@@ -46,6 +46,36 @@
     }
   }
 
+  // Where Google's own "Want to watch" sits (the "Watch movie" row further down the page):
+  // clicking Google's button also saves to your list, with a "✓ On your watchlist" line
+  // under the row. If Google has hidden its button, ours takes its place in that row.
+  function ensureWantToWatch(entity) {
+    for (const { row, want } of WLGoogle.findWatchActions()) {
+      if (want) {
+        if (!want.hasAttribute('data-wl-hooked')) {
+          want.setAttribute('data-wl-hooked', '');
+          // Capture phase, before Google flips its state: "not pressed" means the person is
+          // adding it to Google's list, so add it to ours too; "pressed" means removing.
+          want.addEventListener('click', () => {
+            WLUI.setSaved(entity, want.getAttribute('aria-pressed') !== 'true');
+          }, true);
+        }
+        if (!row.parentElement.querySelector(`:scope > [${HOST_ATTR}="saved-note"]`)) {
+          const host = document.createElement('div');
+          host.setAttribute(HOST_ATTR, 'saved-note');
+          WLUI.mount(host).append(WLUI.createSavedNote(entity));
+          row.after(host);
+        }
+      } else if (!row.querySelector(`[${HOST_ATTR}="wtw"]`)) {
+        const host = document.createElement('div');
+        host.setAttribute(HOST_ATTR, 'wtw');
+        host.style.cssText = 'display:flex;justify-content:center;flex:none;';
+        WLUI.mount(host).append(WLUI.createWantToWatchItem(entity));
+        row.append(host);
+      }
+    }
+  }
+
   let entity;
   let pageUrl = location.href;
 
@@ -66,7 +96,10 @@
     else document.querySelector(`[${HOST_ATTR}="panel"]`)?.remove();
 
     entity = entity || WLGoogle.findEntity();
-    if (entity) ensureButtons(entity);
+    if (entity) {
+      ensureButtons(entity);
+      ensureWantToWatch(entity);
+    }
   }
 
   // A saved title may be missing details: no poster on this computer yet, or no year or
@@ -100,7 +133,8 @@
     if (location.href === pageUrl) return;
     pageUrl = location.href;
     entity = null;
-    document.querySelectorAll(`[${HOST_ATTR}="button"], [${HOST_ATTR}="floating"]`).forEach((host) => host.remove());
+    document.querySelectorAll(`[${HOST_ATTR}="button"], [${HOST_ATTR}="floating"], [${HOST_ATTR}="saved-note"], [${HOST_ATTR}="wtw"]`)
+      .forEach((host) => host.remove());
     run();
     fillDetailsIfSaved();
     watchForLateChanges();

@@ -177,6 +177,21 @@
     return { ...base, year: readYear(), getPoster: capturePoster };
   }
 
+  // The "Watch movie" / "Watch show" section with Google's round buttons (Watch now,
+  // Already watched, Want to watch). Returns each copy Google renders as
+  // { row, want }: the row holding the buttons, and Google's "Want to watch" button when
+  // Google shows it (it's often missing, which is the whole point of this extension).
+  function findWatchActions() {
+    const found = [];
+    for (const section of document.querySelectorAll('[data-attrid$=":media_actions_wholepage"]')) {
+      const buttons = [...section.querySelectorAll('[role="button"]')];
+      const want = buttons.find((b) => /want to watch|watchlist/i.test(b.getAttribute('aria-label') || b.textContent || '')) || null;
+      const row = (want || buttons[buttons.length - 1])?.parentElement;
+      if (row) found.push({ row, want });
+    }
+    return found;
+  }
+
   // The "2010 ‧ Sci-fi ‧ 2h 28m" line under the title; a compact button goes right after it.
   // (The header around it has a fixed height, so the button has to share this line.)
   // Google renders several copies of the header for different screen widths, so there can be more than one.
@@ -207,5 +222,5 @@
     return { place: (host) => column.prepend(host) };
   }
 
-  globalThis.WLGoogle = { getQueries, parseWatchlistQuery, findEntity, findSubtitles, findPanelSpot, fetchDetails, capturePoster };
+  globalThis.WLGoogle = { getQueries, parseWatchlistQuery, findEntity, findSubtitles, findWatchActions, findPanelSpot, fetchDetails, capturePoster };
 })();

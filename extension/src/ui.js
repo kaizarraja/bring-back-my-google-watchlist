@@ -113,6 +113,23 @@
     .wl-empty { grid-column: 1 / -1; margin: 0; padding: 24px 0; color: var(--wl-muted); }
     .wl-head-side { display: inline-flex; align-items: baseline; gap: 12px; }
     .wl-fill-note { margin: 6px 0 0; color: var(--wl-muted); font-size: 12px; }
+    .wl-saved-note { display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin: 6px 0 0; color: var(--wl-accent); font-size: 13px; font-weight: 500; }
+    .wl-saved-note[hidden] { display: none; }
+    .wl-saved-note svg { width: 16px; height: 16px; }
+    .wl-wtw {
+      display: flex; flex-direction: column; align-items: center; gap: 8px; width: 96px; padding: 0;
+      border: 0; background: transparent; color: var(--wl-text); font: inherit; cursor: pointer;
+    }
+    .wl-wtw-circle {
+      display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%;
+      border: 1px solid var(--wl-border); color: var(--wl-text);
+    }
+    .wl-wtw:hover .wl-wtw-circle { background: var(--wl-surface); }
+    .wl-wtw[aria-pressed="true"] .wl-wtw-circle { background: var(--wl-accent-soft); color: var(--wl-on-accent-soft); border-color: transparent; }
+    .wl-wtw-label { font-size: 14px; line-height: 1.3; text-align: center; }
+    .wl-wtw[aria-pressed="true"] .wl-wtw-label { color: var(--wl-accent); }
+    .wl-wtw:focus-visible { outline: 2px solid var(--wl-accent); outline-offset: 4px; border-radius: 8px; }
+    .wl-wtw[disabled] { cursor: progress; opacity: .7; }
     .wl-update {
       display: flex; align-items: flex-start; gap: 8px; margin: 0 0 14px; padding: 10px 12px; border-radius: 10px;
       background: #fef3e2; color: #5c3400; font-size: 13px; border: 1px solid #f6c37e;
@@ -242,6 +259,60 @@
     WL.onChange(refresh);
     refresh();
     return el('div', { class: compact ? 'wl-inline' : null }, [btn, error]);
+  }
+
+  // Saves or removes a title (used by Google's own "Want to watch" button and ours).
+  async function setSaved(entity, saved) {
+    const id = WL.idFor(entity);
+    const has = await WL.has(id);
+    if (saved && !has) await WL.add({ ...entity, id, poster: await entity.getPoster?.() });
+    if (!saved && has) await WL.remove(id);
+  }
+
+  async function toggleSaved(entity) {
+    await setSaved(entity, !(await WL.has(WL.idFor(entity))));
+  }
+
+  // A line under Google's "Watch movie" buttons: "✓ On your watchlist" while saved.
+  function createSavedNote(entity) {
+    const id = WL.idFor(entity);
+    const note = el('div', { class: 'wl-saved-note', role: 'status', hidden: true });
+    const render = async () => {
+      const saved = await WL.has(id);
+      note.hidden = !saved;
+      note.innerHTML = saved ? ICONS.check + '<span>On your watchlist</span>' : '';
+    };
+    WL.onChange(render);
+    render();
+    return note;
+  }
+
+  // Our own "Want to watch", styled like Google's round action buttons, for when Google
+  // hides its button from the "Watch movie" row.
+  function createWantToWatchItem(entity) {
+    const id = WL.idFor(entity);
+    const circle = el('span', { class: 'wl-wtw-circle' });
+    const label = el('span', { class: 'wl-wtw-label', text: 'Want to watch' });
+    const btn = el('button', { class: 'wl-wtw', type: 'button', 'aria-pressed': 'false' }, [circle, label]);
+    const render = async () => {
+      const saved = await WL.has(id);
+      btn.setAttribute('aria-pressed', String(saved));
+      btn.title = saved ? 'On your watchlist. Click to remove' : 'Save to your watchlist';
+      circle.innerHTML = saved ? ICONS.bookmarkFilled : ICONS.bookmark;
+      label.textContent = saved ? 'On your watchlist' : 'Want to watch';
+    };
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      try {
+        await toggleSaved(entity);
+      } finally {
+        btn.disabled = false;
+        render();
+      }
+    });
+    WL.onChange(render);
+    render();
+    return btn;
   }
 
   function createCard(item, { openInNewTab }) {
@@ -424,5 +495,8 @@
     return root;
   }
 
-  globalThis.WLUI = { CSS, ICONS, mount, detectTheme, el, shrinkImage, createWatchButton, createListView };
+  globalThis.WLUI = {
+    CSS, ICONS, mount, detectTheme, el, shrinkImage, createWatchButton, createListView,
+    setSaved, toggleSaved, createSavedNote, createWantToWatchItem,
+  };
 })();
