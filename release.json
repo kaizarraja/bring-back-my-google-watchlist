@@ -1,4 +1,4 @@
 {
-  "notes": "Your list now also shows up when you mistype the search (like \"my watchlis\" or \"my wacthlist\") or click Google's \"Did you mean\" suggestion.",
+  "notes": "New \"Manage extension\" link at the bottom of the toolbar window: it opens the extension's own settings page, where the ↻ reload button for updating sits at the top right.",
   "important": false
 }

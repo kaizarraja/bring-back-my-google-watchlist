@@ -28,7 +28,14 @@
   const updateLink = el('a', { class: 'wl-link wl-update-link', href: WL_CONFIG.updatePage, target: '_blank', rel: 'noopener' });
   const checkButton = el('button', { class: 'wl-link', type: 'button', text: 'Check for updates', onclick: checkNow });
   const versionText = el('span', { class: 'wl-version', text: `Version ${currentVersion}` });
-  const versionRow = el('div', { class: 'wl-version-row' }, [versionText, updateLink, checkButton]);
+  // Opens this extension's own page in the browser's extensions settings (reload, remove,
+  // site access). chrome:// works in Chrome, Brave, Edge and other Chromium browsers, which
+  // send it to their own brave:// or edge:// page.
+  const manageButton = el('button', {
+    class: 'wl-link', type: 'button', text: 'Manage extension', title: "Open this extension's settings page",
+    onclick: () => chrome.tabs.create({ url: `chrome://extensions/?id=${chrome.runtime.id}` }),
+  });
+  const versionRow = el('div', { class: 'wl-version-row' }, [versionText, updateLink, checkButton, manageButton]);
 
   app.append(
     WLUI.createListView({ openInNewTab: true, showSearch: true }),
