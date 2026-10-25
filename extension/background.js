@@ -154,5 +154,15 @@ function schedule() {
   syncNow();
 }
 
-chrome.runtime.onInstalled.addListener(schedule);
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+  schedule();
+  if (reason === 'install') {
+    // First run: walk through signing in and importing the old Google watchlist.
+    chrome.tabs.create({ url: chrome.runtime.getURL('welcome/welcome.html') });
+  } else if (reason === 'update') {
+    // Let titles that older versions gave up on be looked up again straight away.
+    const all = await chrome.storage.local.get(null);
+    await chrome.storage.local.remove(Object.keys(all).filter((key) => key.startsWith('f:') || key === 'fill:pausedAt'));
+  }
+});
 chrome.runtime.onStartup.addListener(schedule);

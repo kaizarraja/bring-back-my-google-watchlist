@@ -110,3 +110,9 @@ footer.site a { color: var(--muted); }
 
 .prose h2 { margin-top: 32px; }
 .prose ul { padding-left: 22px; }
+
+.callout { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; }
+.step-shot { margin: 10px 0 4px; border: 1px solid var(--border); border-radius: 10px; background: #fff; max-width: 100%; height: auto; }
+.setup-grid { display: grid; gap: 20px; align-items: start; }
+@media (min-width: 760px) { .setup-grid { grid-template-columns: 1.1fr 0.9fr; } }
+.setup-shot { margin-top: 0; }

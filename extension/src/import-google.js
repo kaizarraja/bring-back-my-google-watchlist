@@ -96,7 +96,9 @@
       if (!confirm(`Copy ${items.length} titles from this page into My Watchlist?`)) return;
       const r = await WL.addMany(items);
       status.textContent = `Imported ${r.added} titles` +
-        (r.skipped ? `, ${r.skipped} were already on your list` : '') + '.';
+        (r.skipped ? `, ${r.skipped} were already on your list` : '') + '. ' +
+        'Missing posters and years fill in by themselves over the next few minutes. Search “my watchlist” on Google to see your list.';
+      WLFiller.start();
     } catch (err) {
       status.textContent = 'Import failed: ' + (err.message || err);
     } finally {

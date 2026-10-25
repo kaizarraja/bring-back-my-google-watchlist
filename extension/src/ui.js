@@ -112,6 +112,8 @@
     .wl-icon-btn:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
     .wl-empty { grid-column: 1 / -1; margin: 0; padding: 24px 0; color: var(--wl-muted); }
     .wl-head-side { display: inline-flex; align-items: baseline; gap: 12px; }
+    .wl-fill-note { margin: 6px 0 0; color: var(--wl-muted); font-size: 12px; }
+    .wl-fill-note[hidden] { display: none; }
     .wl-import-link { color: var(--wl-accent); font-size: 13px; font-weight: 500; text-decoration: none; }
     .wl-import-link:hover { text-decoration: underline; }
     .wl-welcome {
@@ -306,11 +308,28 @@
       text: 'Import from Google', title: 'Open your saved items on Google to copy your old watchlist over',
     });
 
+    // "Adding posters and details (3 left)" while the background filler is working.
+    const fillNote = el('p', { class: 'wl-fill-note', role: 'status', hidden: true });
+    let fillNoteTimer = 0;
+    const showFillProgress = (progress) => {
+      clearTimeout(fillNoteTimer);
+      const fresh = progress && Date.now() - progress.at < 30000;
+      fillNote.hidden = !fresh;
+      if (!fresh) return;
+      fillNote.textContent = `Adding posters and details in the background (${progress.left} left)…`;
+      fillNoteTimer = setTimeout(() => { fillNote.hidden = true; }, 30000);
+    };
+    chrome.storage.local.get('fill:progress').then((got) => showFillProgress(got['fill:progress']));
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === 'local' && 'fill:progress' in changes) showFillProgress(changes['fill:progress'].newValue);
+    });
+
     const root = el('section', { class: 'wl-list', 'aria-label': 'Your watchlist' }, [
       el('div', { class: 'wl-head' }, [
         el('h2', { class: 'wl-title', text: options.heading || 'Your watchlist' }),
         el('span', { class: 'wl-head-side' }, [sub, importLink]),
       ]),
+      fillNote,
       el('div', { class: 'wl-controls' }, [
         tabButtons.towatch, tabButtons.watched, el('span', { class: 'wl-sep' }),
         kindButtons.all, kindButtons.movie, kindButtons.tv, search,

@@ -4,41 +4,6 @@
 (() => {
   const HOST_ATTR = 'data-wl-host';
 
-  // Titles missing a poster, year or movie/TV label (usually imported ones) get them from
-  // their Google page in the background. Only a few per visit, spaced out, so it stays a
-  // handful of ordinary searches. Each title is retried at most once a week, and if Google
-  // ever answers with its "unusual traffic" check, lookups stop for a day.
-  const FILL_PER_VISIT = 5;
-  const FILL_GAP = 1500;
-  const RETRY_AFTER = 7 * 24 * 60 * 60 * 1000;
-  const PAUSE_AFTER_LIMIT = 24 * 60 * 60 * 1000;
-
-  async function fillMissingDetails() {
-    const { 'fill:pausedAt': pausedAt = 0 } = await chrome.storage.local.get('fill:pausedAt');
-    if (Date.now() - pausedAt < PAUSE_AFTER_LIMIT) return;
-    const items = (await WL.getAll()).filter((i) => !i.poster || !i.year || !i.kind);
-    const tried = await chrome.storage.local.get(items.map((i) => 'f:' + i.id));
-    const due = items
-      .filter((i) => !(Date.now() - (tried['f:' + i.id] || 0) < RETRY_AFTER))
-      .sort((a, b) => Boolean(a.poster) - Boolean(b.poster)) // missing posters first: they show most
-      .slice(0, FILL_PER_VISIT);
-    for (const item of due) {
-      await new Promise((resolve) => setTimeout(resolve, FILL_GAP));
-      try {
-        const found = await WLGoogle.fetchDetails(item);
-        await chrome.storage.local.set({ ['f:' + item.id]: Date.now() });
-        if (found) await WL.fillDetails(item.id, { ...found, getPoster: () => WLUI.shrinkImage(found.poster) });
-      } catch (err) {
-        if (err.message === 'rate-limited') {
-          await chrome.storage.local.set({ 'fill:pausedAt': Date.now() });
-          return;
-        }
-        // Anything else: leave this title as it is; it's tried again next week.
-        await chrome.storage.local.set({ ['f:' + item.id]: Date.now() });
-      }
-    }
-  }
-
   function ensurePanel(kind) {
     if (document.querySelector(`[${HOST_ATTR}="panel"]`)) return;
     const spot = WLGoogle.findPanelSpot();
@@ -52,7 +17,6 @@
     spot.place(host);
     // Catch up with changes made in other browsers; the list refreshes when they arrive.
     chrome.runtime.sendMessage({ type: 'sync-now' }).catch(() => {});
-    fillMissingDetails();
   }
 
   function ensureButtons(entity) {
@@ -100,6 +64,8 @@
 
   run();
   fillDetailsIfSaved();
+  // Any Google page is a chance to fill in titles still missing a poster or year.
+  WLFiller.start();
 
   // Parts of the page render late; put the button back if Google re-renders the header.
   let pending = 0;

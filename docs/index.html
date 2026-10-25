@@ -17,6 +17,7 @@
       <a class="brand" href="./"><img src="assets/icon.png" alt="">Bring Back My Google Watchlist</a>
       <nav class="site">
         <a href="#install">Install</a>
+        <a href="#setup">Setup</a>
         <a href="#faq">FAQ</a>
         <a href="https://github.com/kaizarraja/bring-back-my-google-watchlist">GitHub</a>
       </nav>
@@ -31,7 +32,7 @@
         <a class="button" href="bring-back-my-google-watchlist.zip" download>Download the extension</a>
         <a class="button secondary" href="#install">How to install</a>
       </div>
-      <p class="small">Free and open source · Chrome, Brave and Edge on a computer · <span id="version"></span></p>
+      <p class="small"><strong>Computer only</strong> (Chrome, Brave, Edge) · Free and open source · <span id="version"></span></p>
     </div>
 
     <div class="shots">
@@ -69,33 +70,47 @@
 
     <section id="install">
       <h2>Install (about 2 minutes)</h2>
-      <p>The extension isn't in the Chrome Web Store yet, so it's installed by hand. It's a one-time setup.</p>
+      <p class="callout"><strong>Computer only for now.</strong> It works in Chrome, Brave and Edge on a Mac, Windows or Linux computer. Phones and tablets can't run it yet. If you're on your phone, send yourself this link and open it on your computer.</p>
+      <p>The extension isn't in the Chrome Web Store yet, so it's installed by hand. It's a one-time setup and nothing technical is needed.</p>
       <ol class="steps">
-        <li><strong>Download</strong> <a href="bring-back-my-google-watchlist.zip" download>bring-back-my-google-watchlist.zip</a> and double-click it to unzip. You get a folder called <code>bring-back-my-google-watchlist</code>.</li>
+        <li>
+          <strong>Download</strong> <a href="bring-back-my-google-watchlist.zip" download>bring-back-my-google-watchlist.zip</a> and unzip it.
+          On a Mac, double-click it. On Windows, right-click it and choose <em>Extract All</em>. You get a folder called <code>bring-back-my-google-watchlist</code>.
+        </li>
         <li><strong>Move that folder somewhere permanent</strong>, like your Documents folder. The browser runs the extension from it, so don't delete it later.</li>
-        <li><strong>Open the extensions page</strong>: type <code>chrome://extensions</code> in the address bar (Brave: <code>brave://extensions</code>, Edge: <code>edge://extensions</code>).</li>
-        <li><strong>Turn on Developer mode</strong> with the switch in the top-right corner (in Edge it's on the left).</li>
-        <li><strong>Click “Load unpacked”</strong> and choose the <code>bring-back-my-google-watchlist</code> folder.</li>
-        <li><strong>Pin it</strong>: click the puzzle-piece icon in the toolbar, then the pin next to <strong>Bring Back My Google Watchlist</strong>.</li>
+        <li><strong>Open the extensions page.</strong> Type <code>chrome://extensions</code> in the address bar and press Enter. (Brave: <code>brave://extensions</code>, Edge: <code>edge://extensions</code>.)</li>
+        <li>
+          <strong>Turn on Developer mode</strong> with the switch in the top-right corner. (In Edge it's in the left-hand menu.)
+          <img class="step-shot" style="width:300px" src="assets/install-devmode.png" alt="The Developer mode switch in the top-right corner of Chrome's extensions page" width="560" height="130" loading="lazy">
+        </li>
+        <li>
+          <strong>Click “Load unpacked”</strong>. It appears at the top left once Developer mode is on.
+          <img class="step-shot" style="width:560px" src="assets/install-load-unpacked.png" alt="The Load unpacked button at the top left of Chrome's extensions page" width="1100" height="243" loading="lazy">
+        </li>
+        <li><strong>Choose the folder.</strong> In the window that opens, find the <code>bring-back-my-google-watchlist</code> folder from step 2, click it once, then click <strong>Select</strong> (on Windows: <strong>Select Folder</strong>). Pick the folder itself; you don't need to open it.</li>
+        <li>
+          <strong>Done.</strong> The extension appears on the page, and a welcome page opens to walk you through the rest.
+          <img class="step-shot" style="width:440px" src="assets/install-card.png" alt="The Bring Back My Google Watchlist card on Chrome's extensions page, switched on" width="850" height="470" loading="lazy">
+        </li>
       </ol>
       <p class="note">Chrome may show a “Disable developer mode extensions” message when it starts. That's normal for extensions installed by hand. Just close it, and don't choose Disable.</p>
+    </section>
 
-      <h3>Then try it</h3>
-      <ol class="steps">
-        <li>Search Google for a movie, like <em>Inception</em>, and press <strong>Add to watchlist</strong>.</li>
-        <li>Search <strong>my watchlist</strong>.</li>
-        <li>Optional: click the toolbar icon and <strong>Sign in with Google to sync</strong> to use the same list in other browsers.</li>
-      </ol>
-
-      <h3>Bring over your old Google watchlist</h3>
-      <ol class="steps">
-        <li>Click the toolbar icon, then <strong>Import from Google</strong>. This opens your saved items on Google.</li>
-        <li>Open your watchlist collection (often called <em>Search Watchlist</em> or <em>Google TV watchlist</em>) and scroll to the bottom so every title loads.</li>
-        <li>Press <strong>Import to My Watchlist</strong> in the bottom-right corner. Missing posters and years fill in over the next few times you search “my watchlist”.</li>
-      </ol>
+    <section id="setup">
+      <h2>First-time setup</h2>
+      <p>Right after installing, a welcome page opens with three steps. Each one ticks itself off when it's done.</p>
+      <div class="setup-grid">
+        <ol class="steps">
+          <li><strong>Sign in with Google.</strong> Your list is then saved to your account and stays the same in every browser you use. If Google says the app isn't verified, click <em>Advanced</em>, then <em>Continue</em>. You can also skip this and keep the list on one browser.</li>
+          <li><strong>Bring over your old Google watchlist.</strong> Click <em>Open my Google saves</em>, open your watchlist collection (often <em>Search Watchlist</em> or <em>Google TV watchlist</em>), scroll to the bottom, and click <em>Import to My Watchlist</em> in the bottom-right corner. Posters and years for imported titles fill in by themselves over the next few minutes.</li>
+          <li><strong>Use it like before.</strong> Search <em>my watchlist</em> on Google any time, or click <em>Add to watchlist</em> under the title of any movie or show. You can also open the list from the extension's icon in the toolbar. If you don't see the icon, click the puzzle-piece icon and pin it.</li>
+        </ol>
+        <img class="step-shot setup-shot" src="assets/welcome.png" alt="The welcome page: 1 Sign in with Google, 2 Bring over your old Google watchlist, 3 Use it like before" width="900" height="1251" loading="lazy">
+      </div>
+      <p class="small">Closed the welcome page? Click the extension's icon, then <em>Getting started</em>.</p>
 
       <h3>Updating</h3>
-      <p>When a new version is out, the toolbar window tells you. Download the new zip, replace the old <code>bring-back-my-google-watchlist</code> folder with the new one, then press the reload arrow on the extension's card in the extensions page. Your list stays.</p>
+      <p>When a new version is out, the extension's toolbar window tells you. Download the new zip, replace the old <code>bring-back-my-google-watchlist</code> folder with the new one, then click the reload arrow (↻) on the extension's card in the extensions page. Your list stays.</p>
     </section>
 
     <section id="faq">

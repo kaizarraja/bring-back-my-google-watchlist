@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome – Bring Back My Google Watchlist</title>
+  <link rel="stylesheet" href="welcome.css">
+</head>
+<body>
+  <main>
+    <header>
+      <img src="../icons/icon128.png" alt="" width="56" height="56">
+      <div>
+        <h1>You're in. Three quick steps and your watchlist is back.</h1>
+        <p class="lede">Bring Back My Google Watchlist puts the Watchlist button back on Google's movie and TV pages.</p>
+      </div>
+    </header>
+
+    <ol class="steps">
+      <li class="step" id="step-signin">
+        <div class="step-body">
+          <h2>Sign in with Google</h2>
+          <p>Your list is saved to your Google account, so it's the same in every browser you use. Pick the account you use on Google Search.</p>
+          <div class="actions">
+            <button class="primary" id="signin" type="button">Sign in with Google</button>
+            <button class="quiet" id="skip" type="button">Skip, keep it on this browser only</button>
+          </div>
+          <p class="note" id="signin-status" role="status"></p>
+          <p class="hint">If Google says the app isn't verified, click <strong>Advanced</strong>, then <strong>Continue</strong>. It's a new app.</p>
+        </div>
+      </li>
+
+      <li class="step" id="step-import">
+        <div class="step-body">
+          <h2>Bring over your old Google watchlist</h2>
+          <p>Your old list is still in your Google account, in your saved items.</p>
+          <ol class="mini">
+            <li>Click <strong>Open my Google saves</strong> below.</li>
+            <li>Open your watchlist collection. It's often called <em>Search Watchlist</em> or <em>Google TV watchlist</em>.</li>
+            <li>Scroll to the bottom so every title loads.</li>
+            <li>Click <strong>Import to My Watchlist</strong> in the bottom-right corner.</li>
+          </ol>
+          <div class="actions">
+            <a class="primary" id="saves" href="https://www.google.com/interests/saved" target="_blank" rel="noopener">Open my Google saves</a>
+          </div>
+          <p class="note" id="import-status" role="status"></p>
+          <p class="hint">No old watchlist? Skip this; you can start fresh.</p>
+        </div>
+      </li>
+
+      <li class="step" id="step-use">
+        <div class="step-body">
+          <h2>Use it like before</h2>
+          <ul class="mini">
+            <li>Search <strong>my watchlist</strong> on Google any time to see your list.</li>
+            <li>On any movie or TV show page on Google, click <strong>Add to watchlist</strong> under the title.</li>
+            <li>Or click the extension's icon in your toolbar. If you don't see it, click the puzzle-piece icon and pin <strong>Bring Back My Google Watchlist</strong>.</li>
+          </ul>
+          <div class="actions">
+            <a class="primary" href="https://www.google.com/search?q=my+watchlist" target="_blank" rel="noopener">Search “my watchlist”</a>
+            <a class="secondary" href="https://www.google.com/search?q=interstellar+movie" target="_blank" rel="noopener">Try it on a movie</a>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </main>
+  <script src="../src/storage.js"></script>
+  <script src="welcome.js"></script>
+</body>
+</html>

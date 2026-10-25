@@ -27,7 +27,7 @@ To work on the code, load the `extension` folder from this repository instead. A
 2. Open your **Watchlist** collection and scroll to the bottom so every title loads.
 3. Press **Import to My Watchlist** in the bottom-right corner and confirm.
 
-Google's collection pages don't show years, don't always say whether a title is a movie or a show, and only load posters you've scrolled past. Each time you search "my watchlist", the extension quietly looks up 5 titles that are missing details (posters first), spaced 1.5 seconds apart. If Google ever shows its "unusual traffic" check, lookups pause for a day. Opening a title's Google page fills in its details straight away. Titles that appear in more than one collection are only added once.
+Google's collection pages don't show years, don't always say whether a title is a movie or a show, and only load posters you've scrolled past. Whenever a Google page is open, the extension fills those gaps in by itself, one title every few seconds (`extension/src/filler.js`), so an import completes within minutes. A title that can't be filled is retried the next day, and if Google ever shows its "unusual traffic" check, lookups pause for a day. Titles that appear in more than one collection are only added once.
 
 ## Backups
 
@@ -68,6 +68,8 @@ extension/
   src/ui.js            the button and the list view (built inside a shadow DOM, so Google's CSS can't affect them)
   src/content.js       puts the button and the list on Google results pages
   src/import-google.js the importer on google.com/interests/saved
+  src/filler.js        fills in missing posters, years and movie/TV labels in the background
+  welcome/             the first-run page: sign in, import, start using it
   popup/               the toolbar popup
   icons/
 

@@ -31,6 +31,7 @@
       syncRow,
       el('button', { class: 'wl-link', type: 'button', text: 'Export', title: 'Save a backup file of your watchlist', onclick: exportFile }),
       el('button', { class: 'wl-link', type: 'button', text: 'Import file', title: 'Load a backup file', onclick: () => fileInput.click() }),
+      el('a', { class: 'wl-link', href: chrome.runtime.getURL('welcome/welcome.html'), target: '_blank', text: 'Getting started' }),
       status,
       fileInput,
     ]),
