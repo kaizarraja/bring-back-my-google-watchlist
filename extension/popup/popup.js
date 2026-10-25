@@ -31,10 +31,6 @@
       syncRow,
       el('button', { class: 'wl-link', type: 'button', text: 'Export', title: 'Save a backup file of your watchlist', onclick: exportFile }),
       el('button', { class: 'wl-link', type: 'button', text: 'Import file', title: 'Load a backup file', onclick: () => fileInput.click() }),
-      el('a', {
-        class: 'wl-link', href: 'https://www.google.com/interests/saved', target: '_blank', rel: 'noopener',
-        text: 'Import from Google', title: 'Open your old Google watchlist, then press "Import" on that page',
-      }),
       status,
       fileInput,
     ]),

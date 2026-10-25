@@ -111,6 +111,20 @@
     .wl-icon-btn:hover { background: rgba(32,33,36,.95); }
     .wl-icon-btn:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
     .wl-empty { grid-column: 1 / -1; margin: 0; padding: 24px 0; color: var(--wl-muted); }
+    .wl-head-side { display: inline-flex; align-items: baseline; gap: 12px; }
+    .wl-import-link { color: var(--wl-accent); font-size: 13px; font-weight: 500; text-decoration: none; }
+    .wl-import-link:hover { text-decoration: underline; }
+    .wl-welcome {
+      grid-column: 1 / -1; padding: 16px; border: 1px solid var(--wl-border); border-radius: 12px; background: var(--wl-surface);
+    }
+    .wl-welcome p { margin: 0 0 10px; }
+    .wl-welcome-title { font-size: 16px; font-weight: 500; }
+    .wl-welcome-button {
+      display: inline-block; margin: 2px 0 12px; padding: 8px 14px; border-radius: 18px;
+      background: var(--wl-accent); color: var(--wl-bg); font-weight: 500; text-decoration: none;
+    }
+    .wl-welcome-button:hover { opacity: .9; }
+    .wl-welcome .wl-welcome-alt { margin: 0; color: var(--wl-muted); font-size: 13px; }
   `;
 
   // Picks light or dark to match the page behind us.
@@ -243,6 +257,24 @@
     ]);
   }
 
+  // Google's own saved items, where the old watchlist lives as a collection.
+  const GOOGLE_SAVES_URL = 'https://www.google.com/interests/saved';
+
+  // Shown while the list is empty: how to bring over an old Google watchlist, or start a new one.
+  function createWelcome() {
+    return el('div', { class: 'wl-welcome' }, [
+      el('p', { class: 'wl-welcome-title', text: 'Your watchlist is empty.' }),
+      el('p', {}, [
+        el('strong', { text: 'Had a watchlist on Google? ' }),
+        'Bring it over in a minute: open your Google saves, open the watchlist collection ' +
+          '(often called “Search Watchlist” or “Google TV watchlist”), scroll to the bottom so every title loads, ' +
+          'then click “Import to My Watchlist” in the bottom-right corner.',
+      ]),
+      el('a', { class: 'wl-welcome-button', href: GOOGLE_SAVES_URL, target: '_blank', rel: 'noopener', text: 'Open my Google saves →' }),
+      el('p', { class: 'wl-welcome-alt', text: 'Or start fresh: search any movie or show on Google and press “Add to watchlist”.' }),
+    ]);
+  }
+
   // The full list with To watch / Watched tabs, a Movies / TV filter and a search box.
   // options: { heading, kind: 'all'|'movie'|'tv', openInNewTab, showSearch }
   function createListView(options = {}) {
@@ -269,8 +301,16 @@
         })
       : null;
 
+    const importLink = el('a', {
+      class: 'wl-import-link', href: GOOGLE_SAVES_URL, target: '_blank', rel: 'noopener',
+      text: 'Import from Google', title: 'Open your saved items on Google to copy your old watchlist over',
+    });
+
     const root = el('section', { class: 'wl-list', 'aria-label': 'Your watchlist' }, [
-      el('div', { class: 'wl-head' }, [el('h2', { class: 'wl-title', text: options.heading || 'Your watchlist' }), sub]),
+      el('div', { class: 'wl-head' }, [
+        el('h2', { class: 'wl-title', text: options.heading || 'Your watchlist' }),
+        el('span', { class: 'wl-head-side' }, [sub, importLink]),
+      ]),
       el('div', { class: 'wl-controls' }, [
         tabButtons.towatch, tabButtons.watched, el('span', { class: 'wl-sep' }),
         kindButtons.all, kindButtons.movie, kindButtons.tv, search,
@@ -294,10 +334,11 @@
       if (state.query) shown = shown.filter((i) => i.title.toLowerCase().includes(state.query));
 
       grid.replaceChildren(...shown.map((item) => createCard(item, options)));
-      if (!shown.length) {
+      if (!items.length) {
+        grid.replaceChildren(createWelcome());
+      } else if (!shown.length) {
         let message;
-        if (!items.length) message = 'Your watchlist is empty. Search for a movie or show on Google and press "Add to watchlist".';
-        else if (state.query) message = 'Nothing on your list matches that search.';
+        if (state.query) message = 'Nothing on your list matches that search.';
         else if (state.tab === 'watched') message = 'Nothing marked as watched yet.';
         else message = 'Nothing left to watch here.';
         grid.replaceChildren(el('p', { class: 'wl-empty', text: message }));
