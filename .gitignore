@@ -1,0 +1,7 @@
+# Private key behind the extension's fixed ID: never publish it.
+extension-key.pem
+*.pem
+
+node_modules/
+.wrangler/
+.DS_Store

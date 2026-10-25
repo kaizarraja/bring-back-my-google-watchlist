@@ -1,0 +1,84 @@
+{
+  "manifest_version": 3,
+  "name": "Bring Back My Google Watchlist",
+  "short_name": "My Watchlist",
+  "version": "0.3.0",
+  "homepage_url": "https://kaizarraja.github.io/bring-back-my-google-watchlist/",
+  "description": "Brings back the Watchlist button on Google movie and TV pages, and shows your list when you search \"my watchlist\".",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyGH5B4YLj7a0V8Xd0hXhWA7UA0XIxSOP0CpvwN73AMuEbSi/fh4pB/Ss9lZoaIXA1wRqAFREpqpi4kPC0O1/9VHdYtaYguwbBPbQoaamQc7GCSUiYSjNoDhaFVv3tB7u2zr/THChhpCdvANh3BHygjEDcz6rTZgGdI/CCLlSPzCrE0ls0mWV41CIuIVV2+mw6LRwh+ziAWYsL2U5iJU5GVNAdoXkl9nDXKX2ld7t7vmYcrwy+nt48wXD9G2X0WzXE3erueNIG7ShyG+uqQjhTmr6kENctvW0OUkx0dw/H+4QQUql/PUvWtnvI2ffKxmj7LYaFA8bEQ97RrUbTqEivwIDAQAB",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "identity",
+    "alarms"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "My Watchlist",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/search*",
+        "https://www.google.co.in/search*",
+        "https://www.google.co.uk/search*",
+        "https://www.google.ca/search*",
+        "https://www.google.com.au/search*",
+        "https://www.google.co.nz/search*",
+        "https://www.google.ie/search*",
+        "https://www.google.com.sg/search*",
+        "https://www.google.ae/search*",
+        "https://www.google.com.pk/search*",
+        "https://www.google.com.bd/search*",
+        "https://www.google.co.za/search*",
+        "https://www.google.de/search*",
+        "https://www.google.fr/search*",
+        "https://www.google.es/search*",
+        "https://www.google.it/search*",
+        "https://www.google.nl/search*",
+        "https://www.google.com.br/search*",
+        "https://www.google.com.mx/search*",
+        "https://www.google.co.jp/search*"
+      ],
+      "js": [
+        "src/storage.js",
+        "src/ui.js",
+        "src/google.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.google.com/interests/saved*",
+        "https://www.google.com/save*",
+        "https://www.google.co.in/interests/saved*",
+        "https://www.google.co.in/save*",
+        "https://www.google.co.uk/interests/saved*",
+        "https://www.google.ca/interests/saved*",
+        "https://www.google.com.au/interests/saved*"
+      ],
+      "js": [
+        "src/storage.js",
+        "src/ui.js",
+        "src/import-google.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

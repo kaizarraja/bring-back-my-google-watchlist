@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bring Back My Google Watchlist – put the Watchlist button back on Google</title>
+  <meta name="description" content="Google's watchlist button keeps disappearing. Bring Back My Google Watchlist is a free browser extension that brings it back: save movies and shows from Google Search, and search &quot;my watchlist&quot; to see them.">
+  <meta property="og:title" content="Bring Back My Google Watchlist">
+  <meta property="og:description" content="A free extension that puts the Watchlist button back on Google's movie and TV pages.">
+  <meta property="og:image" content="https://kaizarraja.github.io/bring-back-my-google-watchlist/assets/list.png">
+  <link rel="icon" href="assets/icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="assets/icon.png" alt="">Bring Back My Google Watchlist</a>
+      <nav class="site">
+        <a href="#install">Install</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://github.com/kaizarraja/bring-back-my-google-watchlist">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="hero">
+      <h1>Google's Watchlist button keeps disappearing. This brings it back.</h1>
+      <p class="lede">A free browser extension. Search any movie or show on Google and press <strong>Add to watchlist</strong>. Search <strong>my watchlist</strong> and your list is right there, just like before.</p>
+      <div class="actions">
+        <a class="button" href="bring-back-my-google-watchlist.zip" download>Download the extension</a>
+        <a class="button secondary" href="#install">How to install</a>
+      </div>
+      <p class="small">Free and open source · Chrome, Brave and Edge on a computer · <span id="version"></span></p>
+    </div>
+
+    <div class="shots">
+      <figure class="shot wide">
+        <img src="assets/button.png" alt="Google's page for Interstellar with an &quot;On your watchlist&quot; button next to the year and genre" width="730" height="86">
+        <figcaption>The button sits under the title on Google's movie and TV pages.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/list.png" alt="A watchlist with posters for The Bear, Dune: Part Two, Breaking Bad and Inception, shown at the top of Google's results" width="720" height="350">
+        <figcaption>Search “my watchlist” and your list appears at the top of Google's results.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/popup.png" alt="The extension's toolbar window showing the watchlist with posters" width="440" height="515">
+        <figcaption>Or open it from the toolbar, anywhere.</figcaption>
+      </figure>
+    </div>
+
+    <section>
+      <h2>What it does</h2>
+      <div class="features">
+        <div class="feature">
+          <h3>Save from Google</h3>
+          <p>An “Add to watchlist” button on every movie and TV page in Google Search, with the poster saved too.</p>
+        </div>
+        <div class="feature">
+          <h3>Search “my watchlist”</h3>
+          <p>Your list shows at the top of the results, with To watch / Watched, Movies / TV filters and search. “my watchlist movies” works too.</p>
+        </div>
+        <div class="feature">
+          <h3>Same list everywhere</h3>
+          <p>Sign in with Google once per browser and your list syncs between Chrome, Brave, Edge and your other computers.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="install">
+      <h2>Install (about 2 minutes)</h2>
+      <p>The extension isn't in the Chrome Web Store yet, so it's installed by hand. It's a one-time setup.</p>
+      <ol class="steps">
+        <li><strong>Download</strong> <a href="bring-back-my-google-watchlist.zip" download>bring-back-my-google-watchlist.zip</a> and double-click it to unzip. You get a folder called <code>bring-back-my-google-watchlist</code>.</li>
+        <li><strong>Move that folder somewhere permanent</strong>, like your Documents folder. The browser runs the extension from it, so don't delete it later.</li>
+        <li><strong>Open the extensions page</strong>: type <code>chrome://extensions</code> in the address bar (Brave: <code>brave://extensions</code>, Edge: <code>edge://extensions</code>).</li>
+        <li><strong>Turn on Developer mode</strong> with the switch in the top-right corner (in Edge it's on the left).</li>
+        <li><strong>Click “Load unpacked”</strong> and choose the <code>bring-back-my-google-watchlist</code> folder.</li>
+        <li><strong>Pin it</strong>: click the puzzle-piece icon in the toolbar, then the pin next to <strong>Bring Back My Google Watchlist</strong>.</li>
+      </ol>
+      <p class="note">Chrome may show a “Disable developer mode extensions” message when it starts. That's normal for extensions installed by hand. Just close it, and don't choose Disable.</p>
+
+      <h3>Then try it</h3>
+      <ol class="steps">
+        <li>Search Google for a movie, like <em>Inception</em>, and press <strong>Add to watchlist</strong>.</li>
+        <li>Search <strong>my watchlist</strong>.</li>
+        <li>Optional: click the toolbar icon and <strong>Sign in with Google to sync</strong> to use the same list in other browsers.</li>
+      </ol>
+
+      <h3>Bring over your old Google watchlist</h3>
+      <ol class="steps">
+        <li>Click the toolbar icon, then <strong>Import from Google</strong>. This opens your saved items on Google.</li>
+        <li>Open your watchlist collection (often called <em>Search Watchlist</em> or <em>Google TV watchlist</em>) and scroll to the bottom so every title loads.</li>
+        <li>Press <strong>Import to My Watchlist</strong> in the bottom-right corner. Missing posters and years fill in over the next few times you search “my watchlist”.</li>
+      </ol>
+
+      <h3>Updating</h3>
+      <p>When a new version is out, the toolbar window tells you. Download the new zip, replace the old <code>bring-back-my-google-watchlist</code> folder with the new one, then press the reload arrow on the extension's card in the extensions page. Your list stays.</p>
+    </section>
+
+    <section id="faq">
+      <h2>Questions</h2>
+      <details>
+        <summary>Is this made by Google?</summary>
+        <p>No. It's an independent, free project that works on Google Search pages. It isn't affiliated with or endorsed by Google.</p>
+      </details>
+      <details>
+        <summary>Does it change my watchlist in my Google account?</summary>
+        <p>No. Importing copies your old Google watchlist once; after that, the extension keeps its own list. Your Google watchlist stays untouched, as a backup.</p>
+      </details>
+      <details>
+        <summary>What do you store about me?</summary>
+        <p>Nothing, unless you sign in to sync. If you do, the sync server stores your Google account's email and ID and your list. Nothing is sold or shared, and you can delete it all from the toolbar window. The <a href="privacy.html">privacy policy</a> has the details.</p>
+      </details>
+      <details>
+        <summary>Does it work on my phone?</summary>
+        <p>Not yet. Phone browsers like Chrome on Android and iPhone don't run extensions. A phone version is planned.</p>
+      </details>
+      <details>
+        <summary>Signing in says “Access blocked” or “This app isn't verified”</summary>
+        <p>The sign-in app is new. If you see “isn't verified”, choose Continue. If it says “Access blocked”, sign-in isn't open to everyone yet. Everything else works without signing in.</p>
+      </details>
+      <details>
+        <summary>Something's broken or I have an idea</summary>
+        <p><a href="https://github.com/kaizarraja/bring-back-my-google-watchlist/issues">Open an issue on GitHub</a>, or email <a href="mailto:kaizar.raja@gmail.com">kaizar.raja@gmail.com</a>.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <a href="privacy.html">Privacy policy</a> · <a href="https://github.com/kaizarraja/bring-back-my-google-watchlist">Source code</a> · MIT licence<br>
+      Not affiliated with Google. Google is a trademark of Google LLC.
+    </div>
+  </footer>
+
+  <script>
+    fetch('version.json').then((r) => r.json()).then((v) => {
+      document.getElementById('version').textContent = 'Version ' + v.version;
+    }).catch(() => {});
+  </script>
+</body>
+</html>
