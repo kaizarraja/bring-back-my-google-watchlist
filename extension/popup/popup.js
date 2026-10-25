@@ -23,6 +23,13 @@
   const deleteButton = el('button', { class: 'wl-link', type: 'button', text: 'Delete synced data', onclick: deleteSynced });
   const syncRow = el('div', { class: 'wl-sync' }, [syncText, signInButton, syncNowButton, signOutButton, deleteButton]);
 
+  // "Version 0.5.1 · Check for updates", or "Update to 0.6.0 →" when one is out.
+  const currentVersion = chrome.runtime.getManifest().version;
+  const updateLink = el('a', { class: 'wl-link wl-update-link', href: WL_CONFIG.updatePage, target: '_blank', rel: 'noopener' });
+  const checkButton = el('button', { class: 'wl-link', type: 'button', text: 'Check for updates', onclick: checkNow });
+  const versionText = el('span', { class: 'wl-version', text: `Version ${currentVersion}` });
+  const versionRow = el('div', { class: 'wl-version-row' }, [versionText, updateLink, checkButton]);
+
   app.append(
     WLUI.createListView({ openInNewTab: true, showSearch: true }),
     el('footer', { class: 'wl-footer' }, [
@@ -31,6 +38,7 @@
       el('button', { class: 'wl-link', type: 'button', text: 'Import file', title: 'Load a backup file', onclick: () => fileInput.click() }),
       el('a', { class: 'wl-link', href: chrome.runtime.getURL('welcome/welcome.html'), target: '_blank', text: 'Getting started' }),
       status,
+      versionRow,
       fileInput,
     ]),
   );
@@ -81,8 +89,30 @@
     status.textContent = res.ok ? 'Your synced data was deleted from the server.' : "Couldn't delete: " + res.error;
   }
 
+  async function showVersion(justChecked = false) {
+    const { 'update:latest': latest } = await chrome.storage.local.get('update:latest');
+    const newer = latest && WL.isNewerVersion(latest.version, currentVersion);
+    updateLink.hidden = !newer;
+    checkButton.hidden = Boolean(newer);
+    if (newer) updateLink.textContent = `Update to version ${latest.version} →`;
+    versionText.textContent = `Version ${currentVersion}` + (justChecked && !newer ? ' · You have the latest version' : '');
+  }
+
+  async function checkNow() {
+    checkButton.disabled = true;
+    checkButton.textContent = 'Checking…';
+    await send('check-update');
+    checkButton.disabled = false;
+    checkButton.textContent = 'Check for updates';
+    showVersion(true);
+  }
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && 'update:latest' in changes) showVersion();
+  });
+  showVersion();
   // Opening the popup is a good moment to look for a newer version; the banner above the
-  // list appears as soon as the background check finds one.
+  // list and the update link appear as soon as the check finds one.
   send('check-update');
 
   async function exportFile() {
