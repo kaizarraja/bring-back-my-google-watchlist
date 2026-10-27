@@ -1,0 +1,22 @@
+name: Feature idea
+description: Suggest something that would make your watchlist better.
+labels: ["idea"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to do?
+      description: Describe what's missing or annoying today.
+      placeholder: I'd like to sort my list by year.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How do you picture it working?
+      description: Optional. A rough idea is fine.
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Screenshots, examples from other apps, and so on.

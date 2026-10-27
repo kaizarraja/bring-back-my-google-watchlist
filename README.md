@@ -43,12 +43,15 @@ Sign in once per browser from the popup. After that:
 
 The server is a Cloudflare Worker with a D1 database, in `server/`. It stores each user's Google account ID and email and their list, and nothing else.
 
+## Contributing
+
+Bug reports, ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). `main` is protected: every change goes through a pull request that the maintainer merges.
+
 ## Releasing a new version
 
-1. Bump `version` in `extension/manifest.json`.
-2. Write what's new in `release.json` (`notes`). Set `"important": true` only for updates people must not skip; installed copies then show a red banner that can't be dismissed.
-3. Run `sh scripts/package.sh`. This rebuilds `docs/bring-back-my-google-watchlist.zip` and `docs/version.json`.
-4. Commit and push. GitHub Pages publishes the new download within a minute or two.
+1. On a branch, bump `version` in `extension/manifest.json` and write what's new in `release.json` (`notes`). Set `"important": true` only for updates people must not skip; installed copies then show a red banner that can't be dismissed.
+2. Run `sh scripts/package.sh`. This rebuilds `docs/bring-back-my-google-watchlist.zip` and `docs/version.json`.
+3. Open a pull request and merge it. GitHub Pages publishes the new download within a minute or two.
 
 Installed copies check `version.json` once a day, when the browser starts and when the popup opens. When there's a newer version they show an orange **NEW** badge on the toolbar icon and a banner above the list (on Google and in the popup), linking to `docs/update.html`, the step-by-step update guide.
 

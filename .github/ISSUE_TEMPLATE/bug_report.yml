@@ -1,0 +1,73 @@
+name: Bug report
+description: Something isn't working, like the button not showing or the list not appearing.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! A link to the Google page where it went wrong and a screenshot make it much faster to fix.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+      placeholder: I searched "dune part two" on Google, but the Add to watchlist button didn't appear.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can we see it?
+      description: The search you typed or the page address, and anything you clicked.
+      placeholder: |
+        1. Search Google for "dune part two"
+        2. Look under the title
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Brave
+        - Edge
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Extension version
+      description: Shown at the bottom of the extension's toolbar window, like "Version 0.6.0".
+      placeholder: "0.6.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Computer
+      options:
+        - Mac
+        - Windows
+        - Linux
+        - ChromeOS
+  - type: dropdown
+    id: signed-in
+    attributes:
+      label: Are you signed in to sync?
+      options:
+        - "Yes"
+        - "No"
+        - Not sure
+  - type: input
+    id: google-site
+    attributes:
+      label: Which Google site?
+      description: For example google.com or google.co.in.
+      placeholder: google.com
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Drag a screenshot here if you can.

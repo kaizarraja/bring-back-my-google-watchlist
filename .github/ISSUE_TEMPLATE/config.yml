@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: How to install
+    url: https://kaizarraja.github.io/bring-back-my-google-watchlist/#install
+    about: Step-by-step install guide with screenshots.
+  - name: How to update
+    url: https://kaizarraja.github.io/bring-back-my-google-watchlist/update.html
+    about: Getting the latest version takes about a minute.
+  - name: Questions and privacy
+    url: https://kaizarraja.github.io/bring-back-my-google-watchlist/#faq
+    about: Common questions, including what's stored and how to delete it.
